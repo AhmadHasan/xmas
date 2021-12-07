@@ -1,0 +1,40 @@
+# For a Jar, we will have two builds. One with JDK and Gradle itself for building the application
+# and a final one with JRE only. This makes the final image lighter.
+# Source: https://codefresh.io/docs/docs/learn-by-example/java/gradle/
+# Source: https://spring.io/guides/topicals/spring-boot-docker/
+
+############################
+###         build        ###
+############################
+# Start from a gradle image. We call this image "build"
+FROM openjdk:11-jdk AS build
+
+# Copy source code (.) onto the image
+COPY --chown=gradle:gradle . /home/gradle/src
+
+# Move to the directory with the source code
+WORKDIR /home/gradle/src
+
+# Compile and run unit tests
+RUN gradle build --no-daemon
+
+############################
+###         Run          ###
+############################
+
+# Use a JRE image this time
+# Here we discard the Gradle image with all the compiled classes/unit test results etc.
+FROM openjdk:11-jre-slim as XMas
+
+# Make the port of the application available
+EXPOSE 8080
+
+# Create a directory for the app
+RUN mkdir /app
+
+# Copy only Jar files from the build image (from=build) onto the new image
+# Copy all jars from gradle build directory then the application jar
+COPY --from=build /home/gradle/src/build/libs/*.jar /app/xmas.jar
+
+# The command that starts the application
+ENTRYPOINT ["java", "-jar","/app/xmas.jar"]

@@ -6,8 +6,10 @@
 ############################
 ###         build        ###
 ############################
-# Start from a gradle image. We call this image "build"
-FROM openjdk:11-jdk AS build
+# Start from a gradle Docker image. We call this image "build"
+# gradle:7.3.1-jdk11 is a Docker image with Gradle 7.3.1 and JDK 11 already
+# installed. You can find other images here: https://hub.docker.com/_/gradle
+FROM gradle:7.3.1-jdk11 AS build
 
 # Copy source code (.) onto the image
 COPY --chown=gradle:gradle . /home/gradle/src
@@ -16,7 +18,7 @@ COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 
 # Compile and run unit tests
-RUN gradle build --no-daemon
+RUN gradle build
 
 ############################
 ###         Run          ###
@@ -30,7 +32,10 @@ FROM openjdk:11-jre-slim as XMas
 EXPOSE 8080
 
 # Create a directory for the app
-RUN mkdir /app
+RUN mkdir /xmas
+
+
+VOLUME /tmp
 
 # Copy only Jar files from the build image (from=build) onto the new image
 # Copy all jars from gradle build directory then the application jar

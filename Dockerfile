@@ -28,7 +28,7 @@ RUN gradle build
 # Here we discard the Gradle image with all the compiled classes/unit test results etc.
 FROM openjdk:11-jre-slim as XMas
 
-# Make the port of the application available
+# Make the port of the application available to the outside
 EXPOSE 8080
 
 # Create a directory for the app
@@ -39,7 +39,7 @@ VOLUME /tmp
 
 # Copy only Jar files from the build image (from=build) onto the new image
 # Copy all jars from gradle build directory then the application jar
-COPY --from=build /home/gradle/src/build/libs/*.jar /app/xmas.jar
+COPY --from=build /home/gradle/src/build/libs/*.jar /xmas/xmas.jar
 
-# The command that starts the application
-ENTRYPOINT ["java", "-jar","/app/xmas.jar"]
+# The command that starts the application by running the executable jar (java -jar jarfile.jar)
+ENTRYPOINT ["java", "-jar","/xmas/xmas.jar"]

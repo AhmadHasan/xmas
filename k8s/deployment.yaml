@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xmas
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xmas
+  template:
+    metadata:
+      labels:
+        app: xmas
+    spec:
+      containers:
+        - name: xmascontainerregistry
+          image: xmascontainerregistry.azurecr.io
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MONGO_URL
+              value: mongodb://mongo:27017/dev
+          imagePullPolicy: Always

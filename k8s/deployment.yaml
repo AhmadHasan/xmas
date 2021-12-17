@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: xmas
+  name: xmaslab2021
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: xmas
+      app: xmaslab2021
   template:
     metadata:
       labels:
-        app: xmas
+        app: xmaslab2021
     spec:
       containers:
         - name: xmascontainerregistry

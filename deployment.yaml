@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: xmas
+  name: xmas
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xmas
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: xmas
+    spec:
+      containers:
+      - image: xmaslabcr.azurecr.io/xmas:latest
+        imagePullPolicy: Never
+        name: xmas
+        resources: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: xmas
+  name: xmas
+spec:
+  ports:
+  - name: 8080-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: xmas
+  type: ClusterIP
+status:
+  loadBalancer: {}
